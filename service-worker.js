@@ -1,5 +1,5 @@
 const CACHE = "radio-dgae-v1";
-const ASSETS = ["./", "./index.html", "./css/styles.css", "./js/script.js", "./js/stations.js", "./manifest.json"];
+const ASSETS = ["./", "./index.html", "./css/styles.css", "./js/script.js", "./js/stations.js", "./manifest.json", "./imgs/logo.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }));
