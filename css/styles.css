@@ -186,7 +186,7 @@ body {
   overflow: hidden;
 }
 
-.disc-icon { width: 100%; height: 100%; object-fit: contain; }
+.disc-icon { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 
 .disc.playing {
   animation: spin 6s linear infinite;
