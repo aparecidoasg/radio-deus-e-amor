@@ -18,7 +18,13 @@
     disc: document.getElementById("disc"),
     equalizer: document.getElementById("equalizer"),
     customUrl: document.getElementById("customUrl"),
-    btnCustom: document.getElementById("btnCustom")
+    btnCustom: document.getElementById("btnCustom"),
+    miniPlayer: document.getElementById("miniPlayer"),
+    miniName: document.getElementById("miniName"),
+    miniToggle: document.getElementById("miniToggle"),
+    miniDot: document.querySelector(".mini-dot"),
+    heroPlay: document.getElementById("heroPlay"),
+    navbarLive: document.getElementById("navbarLive")
   };
 
   function saveCustomUrl(url) {
@@ -122,16 +128,17 @@
     buttons.forEach(function (b) {
       b.classList.remove("active");
     });
-    btn.classList.add("active");
+    if (btn) btn.classList.add("active");
     document.querySelectorAll(".status-dot").forEach(function (d) {
       d.classList.remove("active");
       d.classList.remove("error");
     });
-    dot.classList.add("active");
+    if (dot) dot.classList.add("active");
 
     current = station;
     retries = 0;
     els.stationName.textContent = station.name;
+    els.miniName.textContent = station.name;
     updateMediaSession();
     audio.src = station.url + (station.url.indexOf("?") >= 0 ? "&" : "?") + "t=" + Date.now();
     audio.play().then(playing).catch(failed);
@@ -142,14 +149,18 @@
     els.equalizer.classList.add("playing");
     els.iconPlay.style.display = "none";
     els.iconPause.style.display = "";
+    els.miniToggle.textContent = "\u275A\u275A";
+    els.miniDot.classList.add("playing");
+    if (els.heroPlay) els.heroPlay.textContent = "Pausar transmiss\u00E3o";
+    if (els.navbarLive) els.navbarLive.textContent = "\u25CF AO VIVO";
   }
 
   function updateMediaSession() {
     if (!current || !("mediaSession" in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: current.name,
-      artist: "Rádio Gospel",
-      album: "Deus é Amor",
+      artist: "R\u00E1dio Gospel",
+      album: "Deus \u00E9 Amor",
       artwork: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }]
     });
   }
@@ -161,16 +172,17 @@
     els.equalizer.classList.remove("playing");
     els.iconPlay.style.display = "";
     els.iconPause.style.display = "none";
+    els.miniToggle.textContent = "\u25B6";
+    els.miniDot.classList.remove("playing");
+    if (els.heroPlay) els.heroPlay.textContent = "Ouvir ao vivo";
+    if (els.navbarLive) els.navbarLive.textContent = "AO VIVO";
   }
 
   function failed() {
-    els.iconPlay.style.display = "";
-    els.iconPause.style.display = "none";
-    els.disc.classList.remove("playing");
-    els.equalizer.classList.remove("playing");
+    paused();
   }
 
-  els.btnPlay.addEventListener("click", function () {
+  function togglePlay() {
     if (!current) {
       const first = els.stationList.querySelector("button");
       if (first) first.click();
@@ -182,7 +194,12 @@
       audio.pause();
       paused();
     }
-  });
+  }
+
+  els.btnPlay.addEventListener("click", togglePlay);
+  if (els.heroPlay) els.heroPlay.addEventListener("click", togglePlay);
+  if (els.miniToggle) els.miniToggle.addEventListener("click", togglePlay);
+  if (els.navbarLive) els.navbarLive.addEventListener("click", togglePlay);
 
   audio.addEventListener("playing", playing);
   audio.addEventListener("pause", paused);
@@ -207,6 +224,7 @@
         dot.classList.add("error");
       }
       els.stationName.textContent = "Falha ao conectar";
+      els.miniName.textContent = "Falha ao conectar";
     }
   });
 
@@ -228,4 +246,5 @@
   }
 
   buildList();
+  paused();
 })();
