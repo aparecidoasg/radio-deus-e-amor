@@ -72,6 +72,11 @@ body {
 
 .nav-links a:hover { color: var(--accent); }
 
+.btn-download-link {
+  color: var(--accent) !important;
+  font-weight: 700;
+}
+
 .btn-live {
   border: 1px solid var(--accent);
   background: transparent;
